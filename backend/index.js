@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
@@ -6,7 +7,7 @@ const PORT = 3000;
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5500', // Permitir CORS para el frontend
+    origin: 'http://127.0.0.1:5500', // Permitir CORS para el frontend
     methods: ['GET', 'POST', 'PUT'],
     allowedHeaders: ['Content-Type']
 }));
