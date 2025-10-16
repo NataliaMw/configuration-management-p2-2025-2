@@ -14,12 +14,36 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 
-//diccionario local para guardar la data
-const tasks = {};
-let nextId = 1;
-
 // It should provide endpoints to:
 // GET /tasks — Retrieve all tasks
+const cors = require('cors');
+app.use(cors());
+
+//diccionario local para guardar la data
+let tasks = [
+  {
+    id: 1,
+    title: 'Crear el backend con Node.js y Express',
+    completed: true
+  },
+  {
+    id: 2,
+    title: 'Implementar el endpoint GET /tasks',
+    completed: true
+  },
+  {
+    id: 3,
+    title: 'Desarrollar el frontend para mostrar las tareas',
+    completed: false
+  }
+];
+
+let nextId = 1;
+
+app.get('/tasks', (req, res) => {
+  console.log("Se ha recibido una petición GET en '/tasks'");
+  res.json(tasks);
+});
 
 // POST /tasks — add a new task
 app.post('/tasks', (req, res) => {
@@ -38,8 +62,9 @@ app.post('/tasks', (req, res) => {
 	};
 
 	//guardar localmente en el diccionario
-	tasks[nextId] = task;
-	nextId++;
+  tasks.push(task);
+  nextId++;
+
 
 	return res.status(201).json(task);
 });
@@ -53,3 +78,22 @@ app.listen(PORT, () => {
 
 // PUT /tasks/:id — Mark a task as completed
 // All backend code must be developed in a single file: index.js.
+const express = require('express');
+const app = express();
+
+let tasks = [
+    { id: 1, title: 'task 1', completed: false },
+    { id: 2, title: 'task 2', completed: false },
+    { id: 3, title: 'task 3', completed: false }
+];
+
+app.put('/tasks/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex(task => task.id === id);
+    if (taskIndex === -1) {
+        // Task not found
+        return res.status(404).json({ error: 'Task not found' });
+    }
+    tasks[taskIndex].completed = true;
+    res.json(tasks[taskIndex]);
+});
