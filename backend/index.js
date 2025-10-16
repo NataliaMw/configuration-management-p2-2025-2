@@ -33,6 +33,7 @@ app.post('/tasks', (req, res) => {
     };
     tasks.push(nuevaTarea);
     res.status(201).json(nuevaTarea);
+});
 
 app.put('/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
