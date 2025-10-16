@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+
+    </head>
+    <body>
+        <script>
+            const API_URL = "http://localhost:3000/tasks";
+            const taskList = document.getElementById("taskList");
+            const addBtn = document.getElementById("addBtn");
+            const newTaskInput = document.getElementById("newTask");
+
+
+            async function loadTasks() {
+            try {
+                const res = await fetch(API_URL);
+                const tasks = await res.json();
+                renderTasks(tasks);
+            } catch (err) {
+                console.error("Error al cargar tareas:", err);
+            }
+            }
+
+
+            function renderTasks(tasks) {
+            taskList.innerHTML = "";
+            tasks.forEach(task => {
+                const li = document.createElement("li");
+                li.textContent = task.title;
+
+                if (task.completed) li.classList.add("completed");
+
+                li.addEventListener("click", () => {
+                if (!task.completed) markAsCompleted(task.id);
+                });
+
+                taskList.appendChild(li);
+            });
+            }
+
+            addBtn.addEventListener("click", async () => {
+            const title = newTaskInput.value.trim();
+            if (!title) return;
+
+            try {
+                await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title })
+                });
+                newTaskInput.value = "";
+                loadTasks();
+            } catch (err) {
+                console.error("Error al agregar tarea:", err);
+            }
+            });
+
+
+            async function markAsCompleted(id) {
+            try {
+                await fetch(`${API_URL}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+                });
+                loadTasks();
+            } catch (err) {
+                console.error("Error al marcar tarea como completada:", err);
+            }
+            }
+
+
+            loadTasks();
+        </script>
+    </body>
+</html>
