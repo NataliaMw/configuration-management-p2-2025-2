@@ -5,12 +5,36 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 
-//diccionario local para guardar la data
-const tasks = {};
-let nextId = 1;
-
 // It should provide endpoints to:
 // GET /tasks — Retrieve all tasks
+const cors = require('cors');
+app.use(cors());
+
+//diccionario local para guardar la data
+let tasks = [
+  {
+    id: 1,
+    title: 'Crear el backend con Node.js y Express',
+    completed: true
+  },
+  {
+    id: 2,
+    title: 'Implementar el endpoint GET /tasks',
+    completed: true
+  },
+  {
+    id: 3,
+    title: 'Desarrollar el frontend para mostrar las tareas',
+    completed: false
+  }
+];
+
+let nextId = 1;
+
+app.get('/tasks', (req, res) => {
+  console.log("Se ha recibido una petición GET en '/tasks'");
+  res.json(tasks);
+});
 
 // POST /tasks — add a new task
 app.post('/tasks', (req, res) => {
@@ -29,8 +53,9 @@ app.post('/tasks', (req, res) => {
 	};
 
 	//guardar localmente en el diccionario
-	tasks[nextId] = task;
-	nextId++;
+  tasks.push(task);
+  nextId++;
+
 
 	return res.status(201).json(task);
 });
