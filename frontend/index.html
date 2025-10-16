@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root {
+            font-family: system-ui, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f7fb;
+            color: #222;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(235, 81, 210, 0.1);
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 14px;
+            background: #cb60cb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #777;
+        }
+
+        .icon-btn {
+            background: #eee;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 4px 10px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .icon-btn:hover {
+            background: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>My Tasks</h1>
+            <p class="sub">
+                <span id="dayName">—</span> <span id="dayNumber">—</span>
+            </p>
+
+            <div class="row">
+                <input id="taskInput" type="text" placeholder="Input your task!" />
+                <button id="addBtn">Add Task</button>
+            </div>
+
+            <ul id="taskList">
+                <!--  EJEMPLOS
+                <li>
+                    <div class="left">
+                        <input type="checkbox" />
+                        <span class="task-text">grocery</span>
+                    </div>
+                    <button class="icon-btn" aria-label="Remove">×</button>
+                </li>
+                <li>
+                    <div class="left">
+                        <input type="checkbox" />
+                        <span class="task-text">laundry</span>
+                    </div>
+                    <button class="icon-btn" aria-label="Remove">×</button>
+                </li>
+                <li>
+                    <div class="left">
+                        <input type="checkbox" />
+                        <span class="task-text">makeup</span>
+                    </div>
+                    <button class="icon-btn" aria-label="Remove">×</button>
+                </li>
+                -->
+            </ul>
+            
+        </div>
+    </div>
+
+    <script>
+        const addBtn = document.getElementById("addBtn");
+        const newTask = document.getElementById("taskInput");
+        const tasks = document.getElementById("taskList");
+
+        const today = new Date();
+        const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
+        const dayNumber = today.getDate();
+
+        document.getElementById("dayName").textContent = dayName;
+        document.getElementById("dayNumber").textContent = dayNumber;
+
+
+        addBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const taskText = newTask.value.trim();
+            if (taskText !== "") {
+                const task = document.createElement("li");
+                task.className = "task";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+
+                checkbox.addEventListener("change", () => {
+                    textSpan.classList.toggle("completed", checkbox.checked);
+                });
+
+                const textSpan = document.createElement("span");
+                textSpan.textContent = taskText;
+                textSpan.className = "task-text";
+
+                const removeBtn = document.createElement("button");
+                removeBtn.className = "icon-btn";
+                removeBtn.setAttribute("aria-label", "Remove");
+                removeBtn.textContent = "×";
+
+                removeBtn.addEventListener("click", () => {
+                    task.remove();
+                });
+
+                task.appendChild(checkbox);
+                task.appendChild(textSpan);
+                task.appendChild(removeBtn);
+
+                tasks.appendChild(task);
+                newTask.value = "";
+
+            }
+
+        });
+
+
+
+
+    </script>
+
+</body>
+</html>
