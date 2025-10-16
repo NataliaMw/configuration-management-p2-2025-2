@@ -6,6 +6,14 @@
 </head>
 <body>
   <h1>Task List (Grupo 1) — Daniel Vilema</h1>
+
+  <!-- TAREA B: Formulario para añadir nuevas tareas -->
+  <form id="addTaskForm">
+    <input type="text" id="taskInput" placeholder="Escribe una nueva tarea" required />
+    <button type="submit">Añadir Tarea</button>
+  </form>
+  <!-- FIN TAREA B -->
+
   <ul id="taskList">Cargando...</ul>
 
   <script>
@@ -15,13 +23,43 @@
         const tasks = await res.json();
         const list = document.getElementById('taskList');
         list.innerHTML = tasks.map(t =>
-          `<li>${t.name} - ${t.completed ? '✅' : '❌'}</li>`
+          `<li>${t.name} - ${t.completed ? 'v' : 'x'}</li>`
         ).join('');
       } catch (e) {
         document.getElementById('taskList').innerHTML = '<li>Error al cargar tareas</li>';
       }
     }
     loadTasks();
+
+    // TAREA B: Lógica para manejar el envío del formulario
+    const addTaskForm = document.getElementById('addTaskForm');
+    const taskInput = document.getElementById('taskInput');
+
+    addTaskForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Evita que la página se recargue al enviar el formulario
+      const taskName = taskInput.value.trim(); // Obtiene el texto y quita espacios en blanco
+      
+      // No hace nada si el campo está vacío
+      if (!taskName) return; 
+
+      try {
+        // Envía la nueva tarea al backend usando el método POST
+        await fetch('http://localhost:3000/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Convierte el objeto a texto JSON para enviarlo
+          body: JSON.stringify({ name: taskName, completed: false }),
+        });
+        
+        taskInput.value = ''; // Limpia el campo de texto después de enviar
+        loadTasks(); // ¡Vuelve a llamar la función de Daniel para refrescar la lista!
+      } catch (err) {
+        alert('Error al guardar la tarea');
+      }
+    });
+    // FIN TAREA B
   </script>
 </body>
 </html>
