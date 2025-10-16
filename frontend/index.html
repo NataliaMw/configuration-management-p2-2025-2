@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 40px;
+    }
+    h1 {
+      text-align: center;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #fff;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lista de Tareas</h1>
+  <ul id="taskList"></ul>
+
+  <script>
+    // Developer A: Mostrar lista de tareas desde el backend
+    async function cargarTareas() {
+      try {
+  const response = await fetch('/tasks'); // endpoint backend
+        const tareas = await response.json();
+        const lista = document.getElementById('taskList');
+        lista.innerHTML = ''; // limpiar
+
+        tareas.forEach(tarea => {
+          const item = document.createElement('li');
+          item.textContent = tarea.title;
+          if (tarea.completed) item.classList.add('completed');
+          lista.appendChild(item);
+        });
+      } catch (error) {
+        console.error('Error al cargar tareas:', error);
+      }
+    }
+    // Llamar a la función al cargar la página
+    cargarTareas();
+  </script>
+
+</body>
+</html>
