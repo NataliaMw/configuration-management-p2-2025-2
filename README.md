@@ -23,11 +23,6 @@ The project is divided into two parts:
 | **Daniel Vilema** | Developer | Frontend | Implemented the “Add New Task” form and handled the submission process using JavaScript (`POST /tasks`). |
 | **Jhon Ullaguary** | Developer | Backend | Implemented the `GET /tasks` endpoint to retrieve all existing tasks. |
 | **Diego Alay** | Developer | Backend | Implemented the `POST /tasks` and `PUT /tasks/:id` endpoints to add and update tasks. |
-| ** Jared Gonzalez ** | Team Leader | Full Project | Responsible for managing merges, resolving conflicts, and creating the final release. |
+| **Jared Gonzalez** | Team Leader | Full Project | Responsible for managing merges, resolving conflicts, and creating the final release. |
 
 ---
-
-## 🌲 Branching Strategy
-
-Each member worked in their own **feature branch**, following the required naming convention:
-
