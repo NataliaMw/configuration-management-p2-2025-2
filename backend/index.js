@@ -5,14 +5,19 @@ const PORT = 3000;
 
 app.use(express.json());
 
+let tasks = {};
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello, world!' });
-});
+app.put('/tasks/:id/', (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
 
+  if (!tasks[id]) {
+    return res.status(404).json({ error: 'Task not found' });
+  }
 
-app.post('/echo', (req, res) => {
-  res.json({ you_sent: req.body });
+  tasks[id] = { ...tasks[id], ...data };
+
+  res.json({ message: 'Task updated', task: tasks[id] });
 });
 
 
