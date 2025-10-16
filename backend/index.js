@@ -21,7 +21,7 @@ let tasks = [
 ];
 
 // ======================================================
-// PARTE 1 - ULLAGUARI
+// PARTE 1 - JOHN ULLAGUARI
 // Servidor base y endpoint GET /tasks
 // ======================================================
 
@@ -32,7 +32,7 @@ app.get('/tasks', (req, res) => {
 
 
 // ======================================================
-// Parte final - INICIO DEL SERVIDOR
+// Parte final - Iniciar el servidor local
 // ======================================================
 const PORT = 3000;
 app.listen(PORT, () => {
