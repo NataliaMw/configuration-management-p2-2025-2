@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -82,7 +82,7 @@
     .completeBtn {
       background-color: #007bff;
       color: white;
-      min-width: 100px;
+      min-width: 80px;
     }
     .completeBtn:hover {
       background-color: #0056b3;
@@ -104,9 +104,9 @@
 </head>
 <body>
   <h1>Team Task Tracker</h1>
-  <p class="subtitle">Collaborative Task Management - Grupo 6</p>
+  <p class="subtitle">Collaborative Task Management - Grupo 1 & Grupo 6</p>
   
-  <!-- Formulario para añadir nuevas tareas (Developer B) -->
+  <!-- Formulario para añadir nuevas tareas (Grupo 1 - Daniel Vilema) -->
   <div class="form-container">
     <form id="addTaskForm">
       <input type="text" id="taskInput" placeholder="Escribe una nueva tarea" required />
@@ -120,33 +120,26 @@
   </ul>
 
   <script>
-    // Detectar automáticamente backend en Codespaces o entorno local
-    const defaultBackend = 'http://localhost:3000/tasks';
-    const possibleBackend = window.location.hostname.includes('github.dev')
-      ? window.location.origin.replace(/-\d+/, '-3000') + '/tasks'
-      : defaultBackend;
-
-    const API_URL = possibleBackend;
-
+    const API_URL = 'http://localhost:3000/tasks';
     const taskList = document.getElementById('taskList');
     const addTaskForm = document.getElementById('addTaskForm');
     const taskInput = document.getElementById('taskInput');
 
-    // Cargar tareas (Developer A)
+    // Función para cargar tareas (Grupo 1 - Daniel Vilema)
     async function loadTasks() {
       try {
         const res = await fetch(API_URL);
         const tasks = await res.json();
-
+        
         if (tasks.length === 0) {
           taskList.innerHTML = '<li class="loading">No hay tareas. ¡Añade una nueva!</li>';
           return;
         }
-
+        
         taskList.innerHTML = tasks.map(t => `
           <li class="${t.completed ? 'completed' : ''}">
-            <span class="task-text">${t.title || t.name}</span>
-            <button class="completeBtn ${t.completed ? 'completed' : ''}" data-id="${t.id}" ${t.completed ? 'disabled' : ''}>
+            <span class="task-text">${t.name}</span>
+            <button class="completeBtn ${t.completed ? 'completed' : ''}" data-id="${t.id}">
               ${t.completed ? '✅ Completada' : 'Completar'}
             </button>
           </li>
@@ -157,19 +150,22 @@
       }
     }
 
-    // Añadir nueva tarea (Developer B)
+    // Lógica para añadir tareas (Grupo 1 - Tarea B)
     addTaskForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const taskName = taskInput.value.trim();
+      
       if (!taskName) return;
-
+      
       try {
         await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ name: taskName, completed: false }),
         });
-
+        
         taskInput.value = '';
         loadTasks();
       } catch (err) {
@@ -178,7 +174,7 @@
       }
     });
 
-    // Marcar tarea como completada (Developer C - Luis Borja)
+    // Lógica para marcar tareas como completadas (Grupo 6 - Developer C)
     taskList.addEventListener('click', async (e) => {
       if (e.target.classList.contains('completeBtn')) {
         const id = e.target.getAttribute('data-id');
@@ -195,7 +191,7 @@
       }
     });
 
-    // Cargar al iniciar
+    // Cargar tareas al iniciar
     loadTasks();
   </script>
 </body>

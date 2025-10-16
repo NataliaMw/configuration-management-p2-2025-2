@@ -1,3 +1,6 @@
+// Team Task Tracker - Backend Server
+// Merged version: zaruma/group-6 + group-6
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -5,13 +8,15 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ========== MIDDLEWARES ==========
 app.use(express.json());
 app.use(cors());
 
-// Serve frontend static files
+// Serve frontend static files (zaruma/group-6)
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// almacenamiento de datos
+// ========== DATA STORE ==========
+// Merged initial tasks from both versions
 let tasks = [
   { id: 1, title: 'Estudiar Git', completed: false },
   { id: 2, title: 'Hacer Deberes', completed: true },
@@ -19,70 +24,69 @@ let tasks = [
   { id: 4, title: 'Example task', completed: false }
 ];
 
-// endpoints de la API
+// ========== API ENDPOINTS ==========
 
-// Developer A: obtener todas las tareas
+// GET /tasks - Obtener todas las tareas (Developer A - Zaruma & group-6)
 app.get('/tasks', (req, res) => {
   res.json(tasks);
 });
 
-// Developer B: crear una nueva tarea
+// POST /tasks - Crear nueva tarea (group-6)
 app.post('/tasks', (req, res) => {
   const { title, name } = req.body;
+  
+  // Acepta tanto 'title' como 'name' para compatibilidad con frontend
   const taskTitle = title || name;
-
+  
   if (!taskTitle) {
     return res.status(400).json({ error: 'Title or name is required' });
   }
-
+  
   const newTask = {
     id: tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
     title: taskTitle,
-    name: taskTitle,
+    name: taskTitle, // Incluir ambos campos para compatibilidad
     completed: false
   };
-
+  
   tasks.push(newTask);
   res.status(201).json(newTask);
 });
 
-// Developer C: marcar tarea como completada
+// PUT /tasks/:id - Marcar tarea como completada (group-6 - Developer C)
 app.put('/tasks/:id', (req, res) => {
   const taskId = parseInt(req.params.id);
   const task = tasks.find(t => t.id === taskId);
-
+  
   if (!task) {
     return res.status(404).json({ error: 'Task not found' });
   }
-
-  // Marca la tarea como completada
-  task.completed = true;
-
-  res.json({
-    message: `Task "${task.title}" marked as completed`,
-    task
-  });
+  
+  // Toggle completed status
+  task.completed = !task.completed;
+  
+  res.json(task);
 });
 
-// endpoint para eliminar
+// DELETE /tasks/:id - Eliminar tarea (endpoint adicional útil)
 app.delete('/tasks/:id', (req, res) => {
   const taskId = parseInt(req.params.id);
-  const index = tasks.findIndex(t => t.id === taskId);
-
-  if (index === -1) {
+  const taskIndex = tasks.findIndex(t => t.id === taskId);
+  
+  if (taskIndex === -1) {
     return res.status(404).json({ error: 'Task not found' });
   }
-
-  const deleted = tasks.splice(index, 1);
-  res.json({ message: 'Task deleted', task: deleted[0] });
+  
+  const deletedTask = tasks.splice(taskIndex, 1);
+  res.json({ message: 'Task deleted', task: deletedTask[0] });
 });
 
-// Servir el frontend desde /
+// GET / - Ruta principal (sirve el frontend)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
-// manejo de errores
+// ========== ERROR HANDLING ==========
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
@@ -92,11 +96,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// iniciar servidores
+// ========== START SERVER ==========
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`API disponible en http://localhost:${PORT}/tasks`);
-  console.log(`Frontend disponible en http://localhost:${PORT}`);
+  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`📋 API disponible en http://localhost:${PORT}/tasks`);
+  console.log(`🌐 Frontend disponible en http://localhost:${PORT}`);
 });
 
 module.exports = app;
