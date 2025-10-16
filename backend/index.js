@@ -21,7 +21,7 @@ let tasks = [
 ];
 
 // ======================================================
-// 🧩 PARTE 1 - ULLAGUARI
+// PARTE 1 - ULLAGUARI
 // Servidor base y endpoint GET /tasks
 // ======================================================
 
@@ -36,5 +36,5 @@ app.get('/tasks', (req, res) => {
 // ======================================================
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
