@@ -1,62 +1,198 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Task Tracker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      margin: 40px;
+      background: #f6f6f6;
+      margin: 0;
+      padding: 20px;
     }
     h1 {
       text-align: center;
+      color: #333;
     }
-    ul {
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #addTaskForm {
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      flex: 1;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    #addBtn {
+      background-color: #28a745;
+      color: white;
+      white-space: nowrap;
+    }
+    #addBtn:hover {
+      background-color: #218838;
+    }
+    #taskList {
       list-style: none;
       padding: 0;
+      max-width: 600px;
+      margin: 0 auto;
     }
     li {
-      background: #fff;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      background: white;
+      margin: 8px 0;
+      padding: 15px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .completed {
+    .task-text {
+      flex: 1;
+      margin-right: 10px;
+    }
+    .completed .task-text {
       text-decoration: line-through;
       color: gray;
+    }
+    .completeBtn {
+      background-color: #007bff;
+      color: white;
+      min-width: 80px;
+    }
+    .completeBtn:hover {
+      background-color: #0056b3;
+    }
+    .completeBtn.completed {
+      background-color: #6c757d;
+    }
+    .loading {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+    .error {
+      text-align: center;
+      color: #dc3545;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
-
-  <h1>Lista de Tareas</h1>
-  <ul id="taskList"></ul>
+  <h1>Team Task Tracker</h1>
+  <p class="subtitle">Collaborative Task Management - Grupo 1 & Grupo 6</p>
+  
+  <!-- Formulario para añadir nuevas tareas (Grupo 1 - Daniel Vilema) -->
+  <div class="form-container">
+    <form id="addTaskForm">
+      <input type="text" id="taskInput" placeholder="Escribe una nueva tarea" required />
+      <button type="submit" id="addBtn">Añadir Tarea</button>
+    </form>
+  </div>
+  
+  <!-- Lista de tareas -->
+  <ul id="taskList">
+    <li class="loading">Cargando tareas...</li>
+  </ul>
 
   <script>
-    // Developer A: Mostrar lista de tareas desde el backend
-    async function cargarTareas() {
-      try {
-  const response = await fetch('/tasks'); // endpoint backend
-        const tareas = await response.json();
-        const lista = document.getElementById('taskList');
-        lista.innerHTML = ''; // limpiar
+    const API_URL = 'http://localhost:3000/tasks';
+    const taskList = document.getElementById('taskList');
+    const addTaskForm = document.getElementById('addTaskForm');
+    const taskInput = document.getElementById('taskInput');
 
-        tareas.forEach(tarea => {
-          const item = document.createElement('li');
-          item.textContent = tarea.title;
-          if (tarea.completed) item.classList.add('completed');
-          lista.appendChild(item);
-        });
-      } catch (error) {
-        console.error('Error al cargar tareas:', error);
+    // Función para cargar tareas (Grupo 1 - Daniel Vilema)
+    async function loadTasks() {
+      try {
+        const res = await fetch(API_URL);
+        const tasks = await res.json();
+        
+        if (tasks.length === 0) {
+          taskList.innerHTML = '<li class="loading">No hay tareas. ¡Añade una nueva!</li>';
+          return;
+        }
+        
+        taskList.innerHTML = tasks.map(t => `
+          <li class="${t.completed ? 'completed' : ''}">
+            <span class="task-text">${t.name}</span>
+            <button class="completeBtn ${t.completed ? 'completed' : ''}" data-id="${t.id}">
+              ${t.completed ? '✅ Completada' : 'Completar'}
+            </button>
+          </li>
+        `).join('');
+      } catch (e) {
+        taskList.innerHTML = '<li class="error">Error al cargar tareas. Verifica que el servidor esté activo.</li>';
+        console.error('Error cargando tareas:', e);
       }
     }
-    // Llamar a la función al cargar la página
-    cargarTareas();
-  </script>
 
+    // Lógica para añadir tareas (Grupo 1 - Tarea B)
+    addTaskForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const taskName = taskInput.value.trim();
+      
+      if (!taskName) return;
+      
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: taskName, completed: false }),
+        });
+        
+        taskInput.value = '';
+        loadTasks();
+      } catch (err) {
+        alert('Error al guardar la tarea');
+        console.error('Error guardando tarea:', err);
+      }
+    });
+
+    // Lógica para marcar tareas como completadas (Grupo 6 - Developer C)
+    taskList.addEventListener('click', async (e) => {
+      if (e.target.classList.contains('completeBtn')) {
+        const id = e.target.getAttribute('data-id');
+        try {
+          await fetch(`${API_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+          });
+          loadTasks();
+        } catch (err) {
+          alert('Error al actualizar la tarea');
+          console.error('Error actualizando tarea:', err);
+        }
+      }
+    });
+
+    // Cargar tareas al iniciar
+    loadTasks();
+  </script>
 </body>
 </html>
