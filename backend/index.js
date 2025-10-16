@@ -21,7 +21,7 @@ let tasks = [
 ];
 
 // ======================================================
-// PARTE 1 - ULLAGUARI
+// PARTE 1 - JOHN ULLAGUARI
 // Servidor base y endpoint GET /tasks
 // ======================================================
 
