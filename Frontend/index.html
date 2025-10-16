@@ -4,3 +4,49 @@ Display a list of tasks (fetched from the backend API)
 Add a new task via a simple input field
 Mark a task as completed
 All code must reside in a single file: index.html. -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Lista de Tareas</title>
+   
+    <style>
+        .completed {
+            text-decoration: line-through;
+            color: grey;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tareas Pendientes</h1>
+
+   
+    <ul id="task-list"></ul>
+
+    <script>
+      
+        const API_URL = 'http://localhost:8080/tasks';
+
+        
+        const taskList = document.getElementById('task-list');
+
+        
+        fetch(API_URL)
+            .then(response => response.json()) 
+            .then(tasks => { 
+                
+                
+                tasks.forEach(task => {
+                    
+                    const listItem = document.createElement('li');              
+                    listItem.textContent = task.title;
+                    if (task.completed) {
+                        listItem.classList.add('completed');
+                    }
+                    taskList.appendChild(listItem);
+                });
+            });
+    </script>
+
+</body>
+</html>
