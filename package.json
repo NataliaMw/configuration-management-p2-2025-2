@@ -1,0 +1,25 @@
+{
+  "name": "configuration-management-p2-2025-2",
+  "version": "1.0.0",
+  "description": "Implement version management in a collaborative development project using Git, working with branches, merging changes, and resolving conflicts in a multi- developer environment. Students can choose between a backend web application or a frontend web application project based on their preference.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NataliaMw/configuration-management-p2-2025-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NataliaMw/configuration-management-p2-2025-2/issues"
+  },
+  "homepage": "https://github.com/NataliaMw/configuration-management-p2-2025-2#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
