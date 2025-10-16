@@ -164,6 +164,14 @@
             <ul id="task-list"></ul>
 
             <!-- BOTON PARA Añadit -->
+            <!-- Formulario para añadir nueva tarea -->
+            <form id="add-task-form" class="card" style="margin-top:12px;" aria-label="Agregar nueva tarea">
+                <label for="task-title" class="skip-link">Agregar nueva tarea</label>
+                <input id="task-title" name="title" type="text" placeholder="Nueva tarea..." required />
+                <div style="margin-top:8px; text-align: right;">
+                    <button type="submit" class="btn">Agregar tarea</button>
+                </div>
+            </form>
             <!-- MARCAR TASK COMO COMPLETADO -->
             <footer style="margin-top:18px">
                 <small>© <span id="year"></span> Taller G3 PAGANINI CORE: Dario Anchundia, Josué Díaz, Hailie Jiménez,
@@ -213,8 +221,40 @@
         fetchTasks();
 
         //    funcion para a;adir task
+        // Añadir nueva tarea (POST /tasks)
+        document.getElementById('add-task-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const input = document.getElementById('task-title');
+            const title = input.value.trim();
+            if (!title) return;
+
+            // Find submit button (use e.submitter when available)
+            const submitButton = e.submitter || e.target.querySelector('button[type="submit"]');
+            if (submitButton) submitButton.disabled = true;
+
+            try {
+                const res = await fetch(API_URL + 'tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, completed: false })
+                });
+
+                if (!res.ok) throw new Error('Failed to add task');
+
+                // Optionally read created task: const created = await res.json();
+                input.value = '';
+                fetchTasks();
+            } catch (err) {
+                console.error('Error adding task:', err);
+                alert('No se pudo agregar la tarea. Revisa la consola para más detalles.');
+            } finally {
+                if (submitButton) submitButton.disabled = false;
+            }
+        });
+
         // funcion para marcar como completado
-        //fetchear
+        // fetchear
 
 
     </script>
