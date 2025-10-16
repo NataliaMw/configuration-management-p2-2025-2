@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Tareas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .task-input {
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      width: 200px;
+    }
+
+    button {
+      padding: 10px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: white;
+      margin: 5px auto;
+      padding: 10px;
+      width: 300px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    li:hover {
+      background: #e8e8e8;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .complete-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .complete-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mis Tareas</h1>
+
+  <div class="task-input">
+    <input id="newTask" type="text" placeholder="Agregar nueva tarea">
+    <button id="addBtn">Agregar</button>
+  </div>
+
+  <ul id="taskList"></ul>
+  </body>
+</html>
