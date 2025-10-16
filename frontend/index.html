@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=
-    , initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
         :root {
@@ -107,15 +106,13 @@
                 <span id="dayName">—</span> <span id="dayNumber">—</span>
             </p>
 
-            <p class="status" id="status"></p>
-
             <div class="row">
                 <input id="taskInput" type="text" placeholder="Input your task!" />
                 <button id="addBtn">Add Task</button>
             </div>
 
             <ul id="taskList">
-                <!-- ejemplos iniciales -->
+                <!--  EJEMPLOS
                 <li>
                     <div class="left">
                         <input type="checkbox" />
@@ -138,10 +135,15 @@
                     <button class="icon-btn" aria-label="Remove">×</button>
                 </li>
             </ul>
+            -->
         </div>
     </div>
 
     <script>
+        const addBtn = document.getElementById("addBtn");
+        const newTask = document.getElementById("taskInput");
+        const tasks = document.getElementById("taskList");
+
         const today = new Date();
         const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
         const dayNumber = today.getDate();
@@ -153,27 +155,26 @@
         addBtn.addEventListener("click", (e) => {
             e.preventDefault();
 
-            const taskTest = newTask.value.trim();
-            if (taskTest !== "") {
-                const task = document.createElement("div");
+            const taskText = newTask.value.trim();
+            if (taskText !== "") {
+                const task = document.createElement("li");
                 task.className = "task";
 
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
-                checkbox.addEventListener("change", updateProgress);
+
+                checkbox.addEventListener("change", () => {
+                    textSpan.classList.toggle("completed", checkbox.checked);
+                });
 
                 const textSpan = document.createElement("span");
-                textSpan.textContent = taskTest;
-                textSpan.class = "taskTest";
+                textSpan.textContent = taskText;
+                textSpan.className = "task-text";
 
                 const removeBtn = document.createElement("button");
-                const removeIcon = document.createElement("img");
-                removeBtn.style.backgroundColor = "transparent";
-                removeBtn.style.borderStyle = "none";
-                removeIcon.src = "x.png";
-                removeIcon.style.width = "25px";
-                removeIcon.style.height = "25px";
-                removeBtn.appendChild(removeIcon);
+                removeBtn.className = "icon-btn";
+                removeBtn.setAttribute("aria-label", "Remove");
+                removeBtn.textContent = "×";
 
                 removeBtn.addEventListener("click", () => {
                     task.remove();
