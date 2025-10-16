@@ -5,14 +5,20 @@ const PORT = 3000;
 
 app.use(express.json());
 
+let tasks = {};
+let contid = 1;
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello, world!' });
+app.get('/tasks', (req, res) => {
+  res.json(tasks);
 });
 
 
-app.post('/echo', (req, res) => {
-  res.json({ you_sent: req.body });
+app.post('/tasks', (req, res) => {
+  let {name} = req.body;
+  if(!name) return res.status(400).json({ error: 'Debe ingresar un nombre' });
+  let id = contid++;
+  tasks[id] = {name, completed: false};
+  res.status(201).json({name, completed: false});
 });
 
 
