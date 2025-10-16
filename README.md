@@ -1,10 +1,10 @@
 # configuration-management-p2-2025-2
 # 🧩 Task Management App
 
-## 👨‍💻 Team Members
-- *Leader:* Emilio  
-- *Frontend:* Adrian, Geovanny  
-- *Backend:* Danny, Andres  
+## 👨‍💻 Team Members Group 7 SUPLAIER
+- *Leader:* Emilio Romero
+- *Frontend:* Adrian Salamea, Geovanny Villacreses
+- *Backend:* Danny Veliz, Andres Bohorquez
 
 ---
 
