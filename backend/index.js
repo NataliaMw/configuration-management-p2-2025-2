@@ -9,13 +9,12 @@ let tasks = {};
 
 app.put('/tasks/:id/', (req, res) => {
   const id = req.params.id;
-  const data = req.body;
 
   if (!tasks[id]) {
     return res.status(404).json({ error: 'Task not found' });
   }
 
-  tasks[id] = { ...tasks[id], ...data };
+  tasks[id].completed = true;
 
   res.json({ message: 'Task updated', task: tasks[id] });
 });
