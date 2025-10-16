@@ -58,7 +58,7 @@ app.put('/tasks/:id', (req, res) => {
 
   task.completed = true;
   res.json(task);
-
+});
 // ======================================================
 // Parte final - Iniciar el servidor local
 // ======================================================
