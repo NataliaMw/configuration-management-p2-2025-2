@@ -1,9 +1,11 @@
 import express from 'express';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 let tasks = {};
 let contid = 1;
@@ -22,11 +24,12 @@ app.put('/tasks/:id/', (req, res) => {
 });
 
 app.post('/tasks', (req, res) => {
-  let {name} = req.body;
-  if(!name) return res.status(400).json({ error: 'Debe ingresar un nombre' });
+    console.log(req.body);
+  let title = req.body.title;
+  if(!title) return res.status(400).json({ error: 'Debe ingresar un nombre' });
   let id = contid++;
-  tasks[id] = {name, completed: false};
-  res.status(201).json({name, completed: false});
+  tasks[id] = {title: title, completed: false};
+  res.status(201).json(tasks[id]);
 });
 
 
