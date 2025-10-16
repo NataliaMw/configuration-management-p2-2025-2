@@ -71,6 +71,7 @@
         nav a:hover {
             color: var(--accent);
         }
+
         main {
             background: #f9fafb;
             padding: 20px;
@@ -193,59 +194,33 @@
 
 <body>
 
-            <!-- ==== FORMULARIO PARA AÑADIR TAREA (Developer B) ==== -->
-            <section aria-labelledby="add-task-title">
-                <h2 id="add-task-title">Add New Task</h2>
-                <form id="add-task-form" aria-label="Add new task form">
-                    <input
-                        type="text"
-                        id="new-task-input"
-                        placeholder="Enter task title"
-                        required
-                        aria-label="Task title"
-                    />
-                    <button type="submit" class="btn">Add Task</button>
-                </form>
-            </section>
+    <!-- ==== FORMULARIO PARA AÑADIR TAREA (Developer B) ==== -->
+    <section aria-labelledby="add-task-title">
+        <h2 id="add-task-title">Add New Task</h2>
+        <form id="add-task-form" aria-label="Add new task form">
+            <input type="text" id="new-task-input" placeholder="Enter task title" required aria-label="Task title" />
+            <button type="submit" class="btn">Add Task</button>
+        </form>
+    </section>
 
-            <!-- ==== LISTA DE TASKS (contenedor para Developer A) ==== -->
-            <section aria-labelledby="tasks-title">
-                <h2 id="tasks-title">Tasks</h2>
-                <ul id="task-list" aria-live="polite"></ul>
-            </section>
+    <!-- ==== LISTA DE TASKS (contenedor para Developer A) ==== -->
+    <section aria-labelledby="tasks-title">
+        <h2 id="tasks-title">Tasks</h2>
+        <ul id="task-list" aria-live="polite"></ul>
+    </section>
 
-            <!-- ==== MARCAR TASK COMO COMPLETADO (placeholder para Developer C) ==== -->
+    <!-- ==== MARCAR TASK COMO COMPLETADO (placeholder para Developer C) ==== -->
 
-      
-    <div class="wrap" role="document">
 
-        <main id="main" tabindex="-1" aria-labelledby="main-title">
-            <h1 id="main-title">Taller grupo #3</h1>
+    <footer>
+        <small>© <span id="year"></span> Taller G3 PAGANINI CORE: Dario Anchundia, Josué Díaz, Hailie Jiménez,
+            José Julio Suárez, Piero Pazmiño</small>
 
-            <!-- LISTA DE TASKS -->
-            <ul id="task-list"></ul>
-
-            <!-- BOTON PARA Añadit -->
-            <!-- Formulario para añadir nueva tarea -->
-            <form id="add-task-form" class="card" style="margin-top:12px;" aria-label="Agregar nueva tarea">
-                <label for="task-title" class="skip-link">Agregar nueva tarea</label>
-                <input id="task-title" name="title" type="text" placeholder="Nueva tarea..." required />
-                <div style="margin-top:8px; text-align: right;">
-                    <button type="submit" class="btn">Agregar tarea</button>
-                </div>
-            </form>
-            <!-- MARCAR TASK COMO COMPLETADO -->
-            <footer style="margin-top:18px">
-                <small>© <span id="year"></span> Taller G3 PAGANINI CORE: Dario Anchundia, Josué Díaz, Hailie Jiménez,
-                    José Julio Suárez, Piero Pazmiño</small>
-
-            </footer>
-        </main>
-    </div>
+    </footer>
 
     <!-- Small script for demo behaviors -->
     <script>
-        const API_URL = 'http://localhost:3000/'
+        const API_URL = 'http://localhost:3000/tasks/'
         async function fetchTasks() {
             try {
                 const res = await fetch(API_URL);
@@ -303,7 +278,7 @@
             }
 
             try {
-                const response = await fetch(`${API_URL}tasks/`, {
+                const response = await fetch(`${API_URL}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -393,7 +368,6 @@
 
         // funcion para marcar como completado
         // fetchear
-        const API_URL = 'http://localhost:3000/'
         async function fetchTasks() {
             try {
                 const res = await fetch(API_URL);
