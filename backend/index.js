@@ -1,5 +1,6 @@
 // Servidor Node.js con Express para Task Tracker
-// Desarrollador Backend 1: Endpoint GET /tasks
+// Backend 1: Endpoint GET /tasks
+// Backend 2: Endpoints POST /tasks y PUT /tasks/:id
 
 const express = require('express');
 const cors = require('cors');
@@ -26,6 +27,7 @@ let nextId = 4;
 // ========================================
 // ENDPOINT: GET /tasks
 // Descripción: Recuperar todas las tareas
+// Desarrollador: Backend 1
 // ========================================
 app.get('/tasks', (req, res) => {
   try {
@@ -42,18 +44,79 @@ app.get('/tasks', (req, res) => {
 });
 
 // ========================================
-// ENDPOINTS PENDIENTES (Backend 2)
+// ENDPOINT: POST /tasks
+// Descripción: Añadir una nueva tarea
+// Desarrollador: Backend 2
 // ========================================
+app.post('/tasks', (req, res) => {
+  const { description } = req.body;
 
-// POST /tasks - Añadir nueva tarea (Backend Developer 2)
-// PUT /tasks/:id - Marcar tarea como completada (Backend Developer 2)
+  // Validación: verificar que description no esté vacía
+  if (!description || description.trim() === '') {
+    return res.status(400).json({ 
+      error: 'La descripción de la tarea no puede estar vacía' 
+    });
+  }
+
+  // Crear nueva tarea
+  const newTask = {
+    id: nextId++,
+    description: description.trim(),
+    completed: false
+  };
+
+  // Añadir a la lista de tareas
+  tasks.push(newTask);
+
+  // Devolver la tarea creada con código 201
+  console.log('✓ Nueva tarea creada:', newTask);
+  res.status(201).json(newTask);
+});
+
+// ========================================
+// ENDPOINT: PUT /tasks/:id
+// Descripción: Marcar una tarea como completada
+// Desarrollador: Backend 2
+// ========================================
+app.put('/tasks/:id', (req, res) => {
+  const { id } = req.params;
+  const { completed } = req.body;
+
+  // Validación: verificar que el ID sea un número válido
+  const taskId = parseInt(id);
+  if (isNaN(taskId)) {
+    return res.status(400).json({ 
+      error: 'El ID proporcionado no es un número válido' 
+    });
+  }
+
+  // Buscar la tarea por ID
+  const taskIndex = tasks.findIndex(task => task.id === taskId);
+
+  // Si la tarea no existe, devolver 404
+  if (taskIndex === -1) {
+    return res.status(404).json({ 
+      error: `No se encontró la tarea con ID ${taskId}` 
+    });
+  }
+
+  // Actualizar el estado de la tarea
+  tasks[taskIndex].completed = completed !== undefined ? completed : true;
+
+  // Devolver la tarea actualizada
+  console.log('✓ Tarea actualizada:', tasks[taskIndex]);
+  res.json(tasks[taskIndex]);
+});
 
 // ========================================
 // INICIAR SERVIDOR
 // ========================================
 app.listen(PORT, () => {
   console.log(`🚀 Servidor Task Tracker ejecutándose en http://localhost:${PORT}`);
-  console.log(`📝 Endpoint disponible: GET http://localhost:${PORT}/tasks`);
+  console.log(`📝 Endpoints disponibles:`);
+  console.log(`   - GET  http://localhost:${PORT}/tasks`);
+  console.log(`   - POST http://localhost:${PORT}/tasks`);
+  console.log(`   - PUT  http://localhost:${PORT}/tasks/:id`);
   console.log(`💾 Tareas en memoria: ${tasks.length}`);
 });
 
