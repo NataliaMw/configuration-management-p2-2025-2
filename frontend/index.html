@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Task List - Grupo 1</title>
+</head>
+<body>
+  <h1>Task List (Grupo 1) — Daniel Vilema</h1>
+  <ul id="taskList">Cargando...</ul>
+
+  <script>
+    async function loadTasks() {
+      try {
+        const res = await fetch('http://localhost:3000/tasks');
+        const tasks = await res.json();
+        const list = document.getElementById('taskList');
+        list.innerHTML = tasks.map(t =>
+          `<li>${t.name} - ${t.completed ? '✅' : '❌'}</li>`
+        ).join('');
+      } catch (e) {
+        document.getElementById('taskList').innerHTML = '<li>Error al cargar tareas</li>';
+      }
+    }
+    loadTasks();
+  </script>
+</body>
+</html>
