@@ -4,3 +4,41 @@ Display a list of tasks (fetched from the backend API)
 Add a new task via a simple input field
 Mark a task as completed
 All code must reside in a single file: index.html. -->
+<html>
+    <script>
+        async function completeTask(taskId) {
+            try {
+                
+                const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                     
+                    throw new Error(`HTTP error! status: ${response.status}. ¿Está corriendo el servidor Node.js en ${API_BASE_URL}?`);
+                }
+
+                const taskToUpdate = tasks.find(t => t.id === taskId);
+                if (taskToUpdate) {
+                    taskToUpdate.completed = true;
+                }
+
+                renderTasks(tasks); 
+                
+            } catch (error) {
+                console.error('Could not complete task:', error);
+                alert(`FALLO: ${error.message}`);
+            }
+        }
+        taskListContainer.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.tagName === 'BUTTON' && target.dataset.action === 'complete') {
+                const taskId = parseInt(target.dataset.id);
+                if (taskId) {
+                    completeTask(taskId);
+                }
+            }
+        });
+    </script>
+</html>
