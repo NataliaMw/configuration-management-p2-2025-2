@@ -220,7 +220,7 @@
 
         fetchTasks();
 
-        //    funcion para a;adir task
+        //    funcion para añadir task
         // Añadir nueva tarea (POST /tasks)
         document.getElementById('add-task-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -234,10 +234,10 @@
             if (submitButton) submitButton.disabled = true;
 
             try {
-                const res = await fetch(API_URL + 'tasks', {
+                const res = await fetch('/tasks', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, completed: false })
+                    body: JSON.stringify({ name: title, completed: false })
                 });
 
                 if (!res.ok) throw new Error('Failed to add task');
