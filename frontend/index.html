@@ -7,92 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        #task-form {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        #task-input {
-            width: calc(100% - 100px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        #add-button {
-            width: 90px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 5px;
-        }
-        #add-button:hover {
-            background-color: #45a049;
-        }
-        #task-list {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            padding: 12px;
-            margin-bottom: 8px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #4CAF50;
-        }
-        li.completed {
-            text-decoration: line-through;
-            color: #888;
-            border-left-color: #888;
-        }
-        .complete-btn {
-            padding: 6px 12px;
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .complete-btn:hover {
-            background-color: #0b7dda;
-        }
-        .complete-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .error {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
-    <title>Lista de Tareas</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -105,7 +19,39 @@
             margin-bottom: 30px;
         }
 
-        .tasks-container {
+        #task-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #task-input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #add-button {
+            width: 90px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        #add-button:hover {
+            background-color: #45a049;
+        }
+
+        #task-list-container {
             background-color: white;
             border-radius: 8px;
             padding: 20px;
@@ -123,6 +69,7 @@
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 10px;
         }
 
@@ -135,11 +82,6 @@
             color: #6c757d;
         }
 
-        .task-checkbox {
-            width: 18px;
-            height: 18px;
-        }
-
         .task-description {
             flex: 1;
         }
@@ -148,19 +90,40 @@
             text-decoration: line-through;
         }
 
+        .complete-btn {
+            padding: 6px 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .complete-btn:hover {
+            background-color: #0b7dda;
+        }
+
+        .complete-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
         .loading {
             text-align: center;
             color: #666;
             font-style: italic;
+            padding: 20px;
         }
 
-        .error {
+        .error-message {
             background-color: #f8d7da;
             color: #721c24;
-            padding: 15px;
+            padding: 10px;
             border-radius: 4px;
             border: 1px solid #f5c6cb;
-            margin-bottom: 20px;
+            margin-top: 10px;
+            font-size: 14px;
         }
 
         .empty-state {
@@ -168,6 +131,13 @@
             color: #666;
             font-style: italic;
             padding: 40px 20px;
+        }
+
+        .form-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
         }
     </style>
 </head>
@@ -178,94 +148,145 @@
     <div id="task-form">
         <input type="text" id="task-input" placeholder="Enter a new task...">
         <button id="add-button">Add Task</button>
-        <div id="error-message" class="error"></div>
+        <div id="form-error" class="form-error"></div>
     </div>
 
     <!-- Task list display -->
-    <div id="task-list">
+    <div id="task-list-container">
         <h2>Tasks</h2>
-        <ul id="tasks"></ul>
+        <div id="loading-message" class="loading" style="display: none;">Loading tasks...</div>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        <div id="empty-state" class="empty-state" style="display: none;">No tasks yet. Add one above!</div>
+        <ul id="tasks" class="task-list"></ul>
     </div>
 
     <script>
         const API_URL = 'http://localhost:3000/tasks';
 
-        // Load tasks on page load
-        window.addEventListener('DOMContentLoaded', loadTasks);
+        // DOM Elements
+        const taskInput = document.getElementById('task-input');
+        const addButton = document.getElementById('add-button');
+        const formError = document.getElementById('form-error');
+        const tasksList = document.getElementById('tasks');
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+        const emptyState = document.getElementById('empty-state');
 
-        // Add task event listener
-        document.getElementById('add-button').addEventListener('click', addTask);
-        document.getElementById('task-input').addEventListener('keypress', (e) => {
+        // Load tasks on page load
+        document.addEventListener('DOMContentLoaded', loadTasks);
+
+        // Add task event listeners
+        addButton.addEventListener('click', addTask);
+        taskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 addTask();
             }
         });
 
+        // Function to show/hide UI states
+        function showLoading() {
+            loadingMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            emptyState.style.display = 'none';
+            tasksList.style.display = 'none';
+        }
+
+        function showError(message) {
+            loadingMessage.style.display = 'none';
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            emptyState.style.display = 'none';
+            tasksList.style.display = 'none';
+        }
+
+        function showTasks() {
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            emptyState.style.display = 'none';
+            tasksList.style.display = 'block';
+        }
+
+        function showEmptyState() {
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            emptyState.style.display = 'block';
+            tasksList.style.display = 'none';
+        }
+
         // Function to load and display tasks
         async function loadTasks() {
             try {
+                showLoading();
+                
                 const response = await fetch(API_URL);
                 if (!response.ok) {
-                    throw new Error('Failed to fetch tasks');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
                 const tasks = await response.json();
-                renderTasks(tasks);
+                
+                if (tasks.length === 0) {
+                    showEmptyState();
+                } else {
+                    renderTasks(tasks);
+                    showTasks();
+                }
             } catch (error) {
                 console.error('Error loading tasks:', error);
-                document.getElementById('tasks').innerHTML = '<li>Error loading tasks. Make sure the backend server is running.</li>';
+                showError('Error loading tasks. Make sure the backend server is running on http://localhost:3000');
             }
         }
 
         // Function to render tasks in the UI
         function renderTasks(tasks) {
-            const taskList = document.getElementById('tasks');
-            taskList.innerHTML = '';
-
-            if (tasks.length === 0) {
-                taskList.innerHTML = '<li>No tasks yet. Add one above!</li>';
-                return;
-            }
+            tasksList.innerHTML = '';
 
             tasks.forEach(task => {
                 const li = document.createElement('li');
+                li.className = 'task-item';
+                
                 if (task.completed) {
                     li.classList.add('completed');
                 }
 
                 const description = document.createElement('span');
+                description.className = 'task-description';
                 description.textContent = task.description;
 
                 const completeBtn = document.createElement('button');
                 completeBtn.textContent = task.completed ? 'Completed' : 'Complete';
-                completeBtn.classList.add('complete-btn');
+                completeBtn.className = 'complete-btn';
                 completeBtn.disabled = task.completed;
                 completeBtn.addEventListener('click', () => markAsCompleted(task.id));
 
                 li.appendChild(description);
                 li.appendChild(completeBtn);
-                taskList.appendChild(li);
+                tasksList.appendChild(li);
             });
         }
 
         // Function to add a new task (POST /tasks)
         async function addTask() {
-            const input = document.getElementById('task-input');
-            const errorMessage = document.getElementById('error-message');
-            const description = input.value.trim();
+            const description = taskInput.value.trim();
+
+            // Clear previous errors
+            formError.textContent = '';
 
             // Validation
-            errorMessage.textContent = '';
             if (!description) {
-                errorMessage.textContent = 'Please enter a task description';
+                formError.textContent = 'Please enter a task description';
                 return;
             }
 
             if (description.length < 3) {
-                errorMessage.textContent = 'Task description must be at least 3 characters';
+                formError.textContent = 'Task description must be at least 3 characters';
                 return;
             }
 
             try {
+                addButton.disabled = true;
+                addButton.textContent = 'Adding...';
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
@@ -275,18 +296,20 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to add task');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const newTask = await response.json();
-
                 // Clear input and reload tasks
-                input.value = '';
-                errorMessage.textContent = '';
+                taskInput.value = '';
+                formError.textContent = '';
                 await loadTasks();
+                
             } catch (error) {
                 console.error('Error adding task:', error);
-                errorMessage.textContent = 'Error adding task. Please try again.';
+                formError.textContent = 'Error adding task. Please try again.';
+            } finally {
+                addButton.disabled = false;
+                addButton.textContent = 'Add Task';
             }
         }
 
@@ -302,14 +325,14 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to update task');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 // Reload tasks to reflect the change
                 await loadTasks();
             } catch (error) {
                 console.error('Error updating task:', error);
-                alert('Error marking task as completed. Please try again.');
+                showError('Error marking task as completed. Please try again.');
             }
         }
     </script>
