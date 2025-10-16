@@ -1,72 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Lista de Tareas</title>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
     <style>
-        .completed {
-            text-decoration: line-through;
-            color: grey;
-        }
+        body { font-family: Arial; padding: 40px; max-width: 500px; margin: 0 auto; }
+        form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        input, button { padding: 10px; font-size: 14px; }
+        button { background: #667eea; color: white; border: none; cursor: pointer; border-radius: 6px; }
+        button:hover { background: #5a67d8; }
+        ul { list-style: none; padding: 0; }
+        li { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+        .completed { text-decoration: line-through; color: gray; }
+        #message { margin-top: 10px; font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
     </style>
 </head>
 <body>
 
-    <h1>Tareas Pendientes</h1>
+    <h1>Gestor de Tareas</h1>
+
+    <!-- Formulario para agregar nuevas tareas -->
+    <form id="taskForm">
+        <input type="text" id="title" placeholder="Título de la tarea" required>
+        <input type="text" id="description" placeholder="Descripción">
+        <button type="submit">Agregar tarea</button>
+    </form>
+
+    <div id="message"></div>
+
+    <!-- Lista de tareas -->
+    <h2>Tareas Pendientes</h2>
     <ul id="task-list"></ul>
 
     <script>
         const API_URL = 'http://localhost:8080/tasks';
         const taskList = document.getElementById('task-list');
+        const message = document.getElementById('message');
         let tasks = [];
 
-        fetch(API_URL)
-            .then(response => response.json()) 
-            .then(data => { 
-                tasks = data;
-                tasks.forEach(task => {
-                    const listItem = document.createElement('li');              
-                    listItem.textContent = task.title;
-                    if (task.completed) {
-                        listItem.classList.add('completed');
-                    }
-                    taskList.appendChild(listItem);
-                });
-            });
+        // Cargar tareas existentes
+        async function loadTasks() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Error al cargar tareas');
+                tasks = await response.json();
+                renderTasks(tasks);
+            } catch (error) {
+                message.textContent = `✗ ${error.message}`;
+                message.className = 'error';
+            }
+        }
 
+        // Renderizar tareas en la lista
+        function renderTasks(tasks) {
+            taskList.innerHTML = '';
+            tasks.forEach(task => {
+                const listItem = document.createElement('li');
+                listItem.textContent = task.title;
+                if (task.completed) listItem.classList.add('completed');
+
+                const completeBtn = document.createElement('button');
+                completeBtn.textContent = '✔ Completar';
+                completeBtn.dataset.id = task.id;
+                completeBtn.dataset.action = 'complete';
+
+                listItem.appendChild(completeBtn);
+                taskList.appendChild(listItem);
+            });
+        }
+
+        // Completar una tarea
         async function completeTask(taskId) {
             try {
                 const response = await fetch(`${API_URL}/${taskId}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ completed: true })
                 });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}. ¿Está corriendo el servidor Node.js en ${API_URL}?`);
-                }
-
-                const taskToUpdate = tasks.find(t => t.id === taskId);
-                if (taskToUpdate) {
-                    taskToUpdate.completed = true;
-                }
-
-            renderTasks(tasks);
-                
+                if (!response.ok) throw new Error('Error al completar tarea');
+                const updatedTask = tasks.find(t => t.id === taskId);
+                if (updatedTask) updatedTask.completed = true;
+                renderTasks(tasks);
             } catch (error) {
-                console.error('Could not complete task:', error);
                 alert(`FALLO: ${error.message}`);
             }
         }
 
+        // Manejo del clic en botones de completar
         taskList.addEventListener('click', (event) => {
             const target = event.target;
             if (target.tagName === 'BUTTON' && target.dataset.action === 'complete') {
                 const taskId = parseInt(target.dataset.id);
-                if (taskId) {
-                    completeTask(taskId);
-                }
+                completeTask(taskId);
             }
         });
+
+        // Crear nueva tarea
+        document.getElementById('taskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, description })
+                });
+
+                if (!response.ok) throw new Error('Error al crear tarea');
+
+                const newTask = await response.json();
+                tasks.push(newTask);
+                renderTasks(tasks);
+
+                message.textContent = `✓ Tarea creada: ${newTask.title}`;
+                message.className = 'success';
+                e.target.reset();
+            } catch (error) {
+                message.textContent = `✗ ${error.message}`;
+                message.className = 'error';
+            }
+        });
+
+        // Inicializar carga de tareas
+        loadTasks();
     </script>
-  
+
 </body>
 </html>
