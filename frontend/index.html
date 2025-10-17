@@ -1,157 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lista de Tareas</title>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 40px; text-align: center; }
+      h1 { color: #333; }
+      .task-input { margin-bottom: 20px; }
+      input { padding: 10px; width: 200px; }
+      button { padding: 10px; margin-left: 10px; cursor: pointer; }
+      ul { list-style: none; padding: 0; }
+      li {
+        background: white; margin: 5px auto; padding: 10px; width: 300px;
+        border-radius: 5px; display: flex; justify-content: space-between; align-items: center;
+        cursor: pointer; transition: background 0.2s;
+      }
+      li:hover { background: #e8e8e8; }
+      .completed { text-decoration: line-through; color: gray; }
+    </style>
+  </head>
+  <body>
+    <h1>Mis Tareas</h1>
 
-    </head>
-    <body>
-        <script>
-            const API_URL = "http://localhost:3000/tasks";
-            const taskList = document.getElementById("taskList");
-            const addBtn = document.getElementById("addBtn");
-            const newTaskInput = document.getElementById("newTask");
+    <div class="task-input">
+      <input id="newTask" type="text" placeholder="Agregar nueva tarea" />
+      <button id="addBtn">Agregar</button>
+    </div>
 
+    <ul id="taskList"></ul>
 
-            async function loadTasks() {
-            try {
-                const res = await fetch(API_URL);
-                const tasks = await res.json();
-                renderTasks(tasks);
-            } catch (err) {
-                console.error("Error al cargar tareas:", err);
-            }
-            }
+    <script>
+      const API_URL = "http://localhost:3000/tasks";
+      const taskList = document.getElementById("taskList");
+      const addBtn = document.getElementById("addBtn");
+      const newTaskInput = document.getElementById("newTask");
 
+      async function loadTasks() {
+        try {
+          const res = await fetch(API_URL);
+          const tasks = await res.json();
+          renderTasks(tasks);
+        } catch (err) {
+          console.error("Error al cargar tareas:", err);
+        }
+      }
 
-            function renderTasks(tasks) {
-            taskList.innerHTML = "";
-            tasks.forEach(task => {
-                const li = document.createElement("li");
-                li.textContent = task.title;
+      function renderTasks(tasks) {
+        taskList.innerHTML = "";
+        tasks.forEach(task => {
+          const li = document.createElement("li");
+          li.textContent = task.title;
+          if (task.completed) li.classList.add("completed");
+          li.addEventListener("click", () => {
+            if (!task.completed) markAsCompleted(task.id);
+          });
+          taskList.appendChild(li);
+        });
+      }
 
-                if (task.completed) li.classList.add("completed");
+      addBtn.addEventListener("click", async () => {
+        const title = newTaskInput.value.trim();
+        if (!title) return;
+        try {
+          await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title })
+          });
+          newTaskInput.value = "";
+          loadTasks();
+        } catch (err) {
+          console.error("Error al agregar tarea:", err);
+        }
+      });
 
-                li.addEventListener("click", () => {
-                if (!task.completed) markAsCompleted(task.id);
-                });
+      async function markAsCompleted(id) {
+        try {
+          await fetch(`${API_URL}/${id}`, { method: "PUT" });
+          loadTasks();
+        } catch (err) {
+          console.error("Error al marcar tarea como completada:", err);
+        }
+      }
 
-                taskList.appendChild(li);
-            });
-            }
-
-            addBtn.addEventListener("click", async () => {
-            const title = newTaskInput.value.trim();
-            if (!title) return;
-
-            try {
-                await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title })
-                });
-                newTaskInput.value = "";
-                loadTasks();
-            } catch (err) {
-                console.error("Error al agregar tarea:", err);
-            }
-            });
-
-
-            async function markAsCompleted(id) {
-            try {
-                await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" }
-                });
-                loadTasks();
-            } catch (err) {
-                console.error("Error al marcar tarea como completada:", err);
-            }
-            }
-
-
-            loadTasks();
-        </script>
-    </body>
-</html>
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Tareas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 40px;
-      text-align: center;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    .task-input {
-      margin-bottom: 20px;
-    }
-
-    input {
-      padding: 10px;
-      width: 200px;
-    }
-
-    button {
-      padding: 10px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      background: white;
-      margin: 5px auto;
-      padding: 10px;
-      width: 300px;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    li:hover {
-      background: #e8e8e8;
-    }
-
-    .completed {
-      text-decoration: line-through;
-      color: gray;
-    }
-
-    .complete-btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 5px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .complete-btn:hover {
-      background-color: #0056b3;
-    }
-  </style>
-</head>
-<body>
-  <h1>Mis Tareas</h1>
-
-  <div class="task-input">
-    <input id="newTask" type="text" placeholder="Agregar nueva tarea">
-    <button id="addBtn">Agregar</button>
-  </div>
-
-  <ul id="taskList"></ul>
+      loadTasks();
+    </script>
   </body>
 </html>
