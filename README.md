@@ -1,2 +1,8 @@
-# configuration-management-p2-2025-2
-Implement version management in a collaborative development project using Git, working with branches, merging changes, and resolving conflicts in a multi- developer environment. Students can choose between a backend web application or a frontend web application project based on their preference.
+# Frontend
+- Hailie Jiménez: Implements the task list display and connects it to the backend API (GET /tasks).
+- Josué Díaz: Adds the “Add New Task” form and handles submission using JavaScript (POST /tasks).
+- Piero Pazmiño: Implements task completion functionality (marking tasks as done) and updates the UI dynamically.
+
+# Backend
+- José Julio Suárez: Boilerplate and PUT endpoint.
+- Darío Anchundia: GET and POST endpoints.
