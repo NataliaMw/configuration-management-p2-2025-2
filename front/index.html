@@ -1,16 +1,10 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="description" content="Plain HTML starter template" />
-    <title>Plain HTML Template</title>
-
-    <!-- Basic fav icon placeholder -->
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
-    <!-- Minimal styles (editable) -->
+    <title>Task Tracker</title>
+    
     <style>
         :root {
             --bg: #ffffff;
@@ -21,22 +15,12 @@
             --max-width: 900px;
         }
 
-        * {
-            box-sizing: border-box
-        }
-
-        html,
-        body {
-            height: 100%
-        }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            font-family: system-ui, sans-serif;
             background: var(--bg);
             color: var(--fg);
-            line-height: 1.45;
-            -webkit-font-smoothing: antialiased;
             padding: 24px;
             display: flex;
             justify-content: center;
@@ -47,121 +31,15 @@
             max-width: var(--max-width);
         }
 
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .brand {
-            font-weight: 700;
-            font-size: 1.125rem
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--muted);
-            margin-left: 12px;
-            font-weight: 600;
-        }
-
-
-        nav a:hover {
-            color: var(--accent);
-        }
-
         main {
             background: #f9fafb;
             padding: 20px;
             border-radius: var(--radius);
-            box-shadow: 0 6px 20px rgba(16, 24, 40, 0.04);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
 
-        h1 {
-            margin: 0 0 8px 0;
-            font-size: 1.5rem
-        }
-
-        p.lead {
-            margin: 0 0 16px 0;
-            color: var(--muted)
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        @media (min-width:720px) {
-            .grid {
-                grid-template-columns: 1fr 320px;
-            }
-        }
-
-        .card {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(15, 23, 42, 0.04);
-        }
-
-        footer {
-            margin-top: 16px;
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-
-        /* Accessible skip link */
-        .skip-link {
-            position: absolute;
-            left: -999px;
-            top: auto;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-
-        .skip-link:focus {
-            left: 12px;
-            top: 12px;
-            width: auto;
-            height: auto;
-            padding: 8px 12px;
-            background: black;
-            color: white;
-            border-radius: 6px;
-            z-index: 999;
-        }
-
-        button.btn {
-            background: var(--accent);
-            color: white;
-            border: 0;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        button.btn:hover {
-            opacity: 0.9;
-        }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            font: inherit;
-        }
-
-        /* Estilos específicos para el formulario de tarea */
+        h1 { margin: 0 0 16px 0; font-size: 1.5rem; }
+        
         #add-task-form {
             display: flex;
             gap: 8px;
@@ -170,9 +48,24 @@
 
         #new-task-input {
             flex: 1;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
         }
 
-        /* Contenedor de lista de tareas */
+        button.btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button.btn:hover { opacity: 0.9; }
+        button.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
         #task-list {
             list-style: none;
             padding: 0;
@@ -182,235 +75,141 @@
         #task-list li {
             display: flex;
             align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: white;
         }
 
-        #task-list li:last-child {
-            border-bottom: none;
+        #task-list li.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        #task-list input[type="checkbox"] {
+            margin-right: 12px;
         }
     </style>
 </head>
-
 <body>
+    <div class="wrap">
+        <main>
+            <h1>Task Tracker - Grupo 3</h1>
+            
+            <!-- Formulario único para añadir tareas -->
+            <form id="add-task-form">
+                <input
+                    type="text"
+                    id="new-task-input"
+                    placeholder="Enter new task..."
+                    required
+                />
+                <button type="submit" class="btn">Add Task</button>
+            </form>
 
-    <!-- ==== FORMULARIO PARA AÑADIR TAREA (Developer B) ==== -->
-    <section aria-labelledby="add-task-title">
-        <h2 id="add-task-title">Add New Task</h2>
-        <form id="add-task-form" aria-label="Add new task form">
-            <input type="text" id="new-task-input" placeholder="Enter task title" required aria-label="Task title" />
-            <button type="submit" class="btn">Add Task</button>
-        </form>
-    </section>
+            <!-- Lista de tareas -->
+            <ul id="task-list" aria-live="polite"></ul>
+        </main>
+    </div>
 
-    <!-- ==== LISTA DE TASKS (contenedor para Developer A) ==== -->
-    <section aria-labelledby="tasks-title">
-        <h2 id="tasks-title">Tasks</h2>
-        <ul id="task-list" aria-live="polite"></ul>
-    </section>
-
-    <!-- ==== MARCAR TASK COMO COMPLETADO (placeholder para Developer C) ==== -->
-
-
-    <footer>
-        <small>© <span id="year"></span> Taller G3 PAGANINI CORE: Dario Anchundia, Josué Díaz, Hailie Jiménez,
-            José Julio Suárez, Piero Pazmiño</small>
-
-    </footer>
-
-    <!-- Small script for demo behaviors -->
     <script>
-        const API_URL = 'http://localhost:3000/tasks/'
-        async function fetchTasks() {
+        const API_URL = 'http://localhost:3000/tasks';
+        
+        // Cargar tareas al iniciar
+        async function loadTasks() {
             try {
-                const res = await fetch(API_URL);
-                const tasks = await res.json();
-
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch tasks');
+                const tasks = await response.json();
                 renderTasks(tasks);
             } catch (error) {
-                console.error('Error fetching tasks:', error);
+                console.error('Error loading tasks:', error);
+                document.getElementById('task-list').innerHTML = 
+                    '<li style="color: red;">Error loading tasks. Is the backend running?</li>';
             }
         }
 
+        // Renderizar tareas
         function renderTasks(tasks) {
-            const list = document.getElementById('task-list');
-            list.innerHTML = '';
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
 
+            // Convertir objeto a array si es necesario
             const taskArray = Object.values(tasks);
 
             taskArray.forEach(task => {
                 const li = document.createElement('li');
+                li.className = task.completed ? 'completed' : '';
+                li.dataset.id = task.id || taskArray.indexOf(task);
 
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = task.completed;
-
-                const text = document.createElement('span');
-                text.textContent = task.title;
-
-                li.appendChild(checkbox);
-                li.appendChild(text);
-
-                list.appendChild(li);
+                li.innerHTML = `
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                           onchange="toggleTask(${li.dataset.id}, this.checked)">
+                    <span>${task.title}</span>
+                `;
+                taskList.appendChild(li);
             });
         }
-        // -------------------------------------------------
-        // Developer B: Add New Task Form + POST /backend
-        // -------------------------------------------------
 
-        const addTaskForm = document.getElementById('add-task-form');
-        const newTaskInput = document.getElementById('new-task-input');
+        // Alternar estado de tarea completada
+        async function toggleTask(id, completed) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ completed })
+                });
 
-        /**
-         * Maneja el envío del formulario:
-         * 1. Previene default submission
-         * 2. Valida el título
-         * 3. Envía POST /backend con JSON { title }
-         * 4. Si OK → limpia input y refresca la lista (loadTasks debe existir)
-         */
-        addTaskForm.addEventListener('submit', async (e) => {
+                if (!response.ok) throw new Error('Failed to update task');
+                
+                // Recargar lista para reflejar cambios
+                loadTasks();
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Failed to update task');
+            }
+        }
+
+        // Añadir nueva tarea
+        document.getElementById('add-task-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const title = newTaskInput.value.trim();
+            
+            const input = document.getElementById('new-task-input');
+            const title = input.value.trim();
+            
             if (!title) {
                 alert('Please enter a task title');
                 return;
             }
 
+            const submitButton = e.target.querySelector('button');
+            submitButton.disabled = true;
+
             try {
                 const response = await fetch(`${API_URL}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ title }),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title })
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to add task');
                 }
 
-                // Opcional: obtener el objeto creado (id, title, completed)
-                const createdTask = await response.json();
-
-                // Limpiar input
-                newTaskInput.value = '';
-
-                // Refrescar UI llamando a la función compartida (Developer A)
-                if (typeof loadTasks === 'function') {
-                    loadTasks();
-                } else {
-                    // Fallback simple si loadTasks aún no está mergeado
-                    console.warn('loadTasks not defined yet – appending manually');
-                    appendTaskToUI(createdTask);
-                }
-            } catch (err) {
-                console.error('Error adding task:', err);
-                alert('Failed to add task. Check console for details.');
-            }
-        });
-
-        /**
-         * Fallback: append a task to the UI (usado solo si loadTasks no está disponible)
-         */
-        function appendTaskToUI(task) {
-            const li = document.createElement('li');
-            li.dataset.id = task.id;
-            li.innerHTML = `
-                <span>${task.title}</span>
-                ${task.completed ? '<em>(completed)</em>' : ''}
-            `;
-            document.getElementById('task-list').appendChild(li);
-        }
-
-        // -------------------------------------------------
-        // Stubs para funciones de otros developers
-        // -------------------------------------------------
-        // Developer A implementará: async function loadTasks() { ... }
-        // Developer C implementará: marcar completado con PUT /tasks/:id
-        // -------------------------------------------------
-
-
-        fetchTasks();
-
-        //    funcion para añadir task
-        // Añadir nueva tarea (POST /tasks)
-        document.getElementById('add-task-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const input = document.getElementById('task-title');
-            const title = input.value.trim();
-            if (!title) return;
-
-            // Find submit button (use e.submitter when available)
-            const submitButton = e.submitter || e.target.querySelector('button[type="submit"]');
-            if (submitButton) submitButton.disabled = true;
-
-            try {
-                const res = await fetch('/tasks', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: title, completed: false })
-                });
-
-                if (!res.ok) throw new Error('Failed to add task');
-
-                // Optionally read created task: const created = await res.json();
                 input.value = '';
-                fetchTasks();
-            } catch (err) {
-                console.error('Error adding task:', err);
-                alert('No se pudo agregar la tarea. Revisa la consola para más detalles.');
+                loadTasks(); // Recargar lista
+            } catch (error) {
+                console.error('Error adding task:', error);
+                alert(`Error: ${error.message}`);
             } finally {
-                if (submitButton) submitButton.disabled = false;
+                submitButton.disabled = false;
             }
         });
 
-        // funcion para marcar como completado
-        // fetchear
-        async function fetchTasks() {
-            try {
-                const res = await fetch(API_URL);
-                const tasks = await res.json();
-
-                renderTasks(tasks);
-            } catch (error) {
-                console.error('Error fetching tasks:', error);
-            }
-        }
-
-        function renderTasks(tasks) {
-            const list = document.getElementById('task-list');
-            list.innerHTML = '';
-
-            const taskArray = Object.values(tasks);
-
-            taskArray.forEach(task => {
-                const li = document.createElement('li');
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = task.completed;
-
-                const text = document.createElement('span');
-                text.textContent = task.title;
-
-                li.appendChild(checkbox);
-                li.appendChild(text);
-
-                list.appendChild(li);
-            });
-        }
-
-
-        fetchTasks();
-
-        //    funcion para a;adir task
-        // funcion para marcar como completado
-        //fetchear
-
-
+        // Cargar tareas al iniciar la aplicación
+        loadTasks();
     </script>
 </body>
-
 </html>
